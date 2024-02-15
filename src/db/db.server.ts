@@ -1,3 +1,4 @@
+import { HttpResponse } from 'msw';
 import { singleton } from './singleton.server';
 import { MockDataBase, Reservation, Room } from './mocks';
 import { factory, manyOf, oneOf, primaryKey } from '@mswjs/data';
@@ -10,7 +11,6 @@ import {
   isSameDay,
   differenceInDays,
 } from 'date-fns';
-import { HttpResponse } from 'msw';
 
 const db = singleton('db', () => {
   const db = factory({

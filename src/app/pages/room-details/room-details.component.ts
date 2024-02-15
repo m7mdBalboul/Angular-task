@@ -1,11 +1,15 @@
 import { Room } from '@db/mocks';
 import { DialogModule } from 'primeng/dialog';
 import { ButtonModule } from 'primeng/button';
-import { RoomsService } from '@services/hotel.service';
 import { DividerModule } from 'primeng/divider';
+import { CalendarModule } from 'primeng/calendar';
+import { RoomsService } from '@services/hotel.service';
 import { inject, computed, Component } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import { BookFormComponent } from './book-form/book-form.component';
+import { CardModule } from 'primeng/card';
+import { ImageModule } from 'primeng/image';
 
 @Component({
   standalone: true,
@@ -15,47 +19,59 @@ import { BookFormComponent } from './book-form/book-form.component';
     DialogModule,
     ButtonModule,
     DividerModule,
+    CalendarModule,
     BookFormComponent,
+    ProgressSpinnerModule,
+    ImageModule,
+    CardModule,
   ],
   template: `
     <div class="flex flex-col items-center justify-center w-full h-full">
       @if (roomSignal().status === 'pending') {
-        <p>Loading...</p>
+        <p-progressSpinner />
       }
       @if (roomSignal().status === 'success' && roomSignal().data; as data) {
         <h1 class="text-5xl mb-6">Room {{ data.roomNumber }}</h1>
 
-        <section class="flex gap-4 flex-col md:flex-row items-center">
-          <div class="card-body">
-            <div class="flex justify-between items-center">
-              <h2 class="card-title">{{ data.type }} Room</h2>
-            </div>
-
-            @for (roomInfo of roomInfos(); track roomInfo.label) {
-              <div
-                class="flex items-center border border-white border-solid gap-2 px-2"
-              >
-                <div class="font-bold w-[12ch] shrink-0">
-                  {{ roomInfo.label }}
+        <section class="flex gap-4 flex-col md:flex-row items-center w-full">
+          <p-card class="flex-1">
+            <ng-template pTemplate="title">
+              <h2 class="my-2 text-center">{{ data.type }} Room</h2>
+            </ng-template>
+            <ng-template pTemplate="content">
+              <div class="flex flex-col justify-around md:flex-row gap-2">
+                <div>
+                  <h3 class="font-bold  shrink-0">Amenities</h3>
+                  <p class="text-sm">{{ formatAmenities(data.amenities) }}</p>
+                  <p-divider type="solid" />
+                  <h3 class="font-bold  shrink-0">Price</h3>
+                  <p class="text-sm">{{ formatPrice(data.price) }}</p>
+                  <p-divider type="solid" />
+                  <div class="shrink-0">
+                    <h3>Availability</h3>
+                    <ul class="p-0 list-none [&>li+li]:mt-2 tabular-nums">
+                      @for (item of data.availability; track item.startDate) {
+                        <li>{{ item.startDate }} - {{ item.endDate }}</li>
+                      }
+                    </ul>
+                  </div>
                 </div>
-                <p-divider type="solid" layout="vertical" class="" />
-                <p class="text-sm">{{ roomInfo.value }}</p>
+                <div>
+                  <p-image
+                    alt="Shoes"
+                    width="400"
+                    [src]="[data.photoUrl]"
+                    [preview]="true"
+                  />
+                </div>
               </div>
-            }
-
-            <div class="flex items-center gap-2">
-              <p-button (click)="show()" class="mx-auto">Book Now</p-button>
-            </div>
-          </div>
-          <figure
-            class="outline outline-1 outline-white outline-offset-2 max-w-fit"
-          >
-            <img
-              alt="Shoes"
-              class="w-96 h-full object-cover"
-              [src]="[data.photoUrl]"
-            />
-          </figure>
+            </ng-template>
+            <ng-template pTemplate="footer">
+              <div class="flex w-full items-center justify-center">
+                <p-button class="mx-auto" (click)="show()">Book Now</p-button>
+              </div>
+            </ng-template>
+          </p-card>
         </section>
         <p-dialog [header]="'Book Room ' + roomId" [(visible)]="dialogVisible">
           <app-book-form [availability]="data.availability" [roomId]="roomId" />

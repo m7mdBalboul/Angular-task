@@ -32,8 +32,8 @@ export const MockDataBase: DataBase = {
       price: 100,
       amenities: ['Free Wi-Fi', 'TV', 'Air Conditioning'],
       availability: [
-        { startDate: '2024-02-15', endDate: '2024-02-20' },
-        { startDate: '2024-02-22', endDate: '2024-02-27' },
+        { startDate: '2024-02-21', endDate: '2024-02-27' },
+        { startDate: '2024-03-01', endDate: '2024-03-07' },
       ],
     },
     {

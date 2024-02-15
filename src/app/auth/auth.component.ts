@@ -7,6 +7,7 @@ import { PasswordModule } from 'primeng/password';
 import { InputTextModule } from 'primeng/inputtext';
 import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService, AuthResponseData } from './auth.service';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-auth',
@@ -17,6 +18,7 @@ import { AuthService, AuthResponseData } from './auth.service';
     DividerModule,
     PasswordModule,
     InputTextModule,
+    ProgressSpinnerModule,
   ],
   template: `
     <div class="flex">
@@ -28,7 +30,7 @@ import { AuthService, AuthResponseData } from './auth.service';
         }
 
         @if (isLoading) {
-          <div class="text-center">Loading...</div>
+          <p-progressSpinner />
         }
 
         @if (!isLoading) {
@@ -85,7 +87,11 @@ import { AuthService, AuthResponseData } from './auth.service';
                 layout="vertical"
                 class="hidden md:block"
               />
-              <p-button (click)="onSwitchMode()" type="button" severity="secondary">
+              <p-button
+                (click)="onSwitchMode()"
+                type="button"
+                severity="secondary"
+              >
                 Go to {{ isLoginMode ? 'Sign Up' : 'Login' }}
               </p-button>
             </div>

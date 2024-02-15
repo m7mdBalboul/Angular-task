@@ -5,64 +5,71 @@ import { RouterModule } from '@angular/router';
 import { Component, inject } from '@angular/core';
 import { RoomsService } from '@services/hotel.service';
 import { ReservationsQueryData } from '@services/hotes.types';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-reservations',
   standalone: true,
-  imports: [TableModule, RouterModule, ButtonModule],
+  imports: [TableModule, RouterModule, ButtonModule, ProgressSpinnerModule],
   template: `
     <div class="flex flex-col items-center gap-4">
       <h1 class="text-5xl">Reservations</h1>
       @if (reservationsSignal().status === 'pending') {
-        <p>Loading...</p>
+        <p-progressSpinner />
       }
       @if (reservationsSignal().status === 'error') {
         <p>No reservations found</p>
       }
       @if (reservationsSignal().status === 'success') {
-        <p-table
-          class="w-full"
-          [value]="reservationsSignal().data || []"
-          styleClass="p-datatable-striped"
-          [breakpoint]="'720px'"
-          [loading]="deleteReservationSignal().status === 'pending'"
-          responsiveLayout="stack"
-        >
-          <ng-template pTemplate="header" let-columns>
-            <tr>
-              <th>Room Number</th>
-              <th>Room Type</th>
-              <th>Check-in</th>
-              <th>Check-out</th>
-              <th>Guests</th>
-              <th>Cancel</th>
-            </tr>
-          </ng-template>
-          <ng-template pTemplate="body" let-reservation let-columns="columns">
-            <tr>
-              <td>
-                <a class="p-button" [routerLink]="['/', reservation.roomId]">{{
-                  reservation.roomNumber
-                }}</a>
-              </td>
-              <td>{{ reservation.type }}</td>
-              <td>{{ reservation.startDate }}</td>
-              <td>{{ reservation.endDate }}</td>
-              <td>{{ reservation.guestName }}</td>
-              <td>
-                @if (getIsDeletable(reservation)) {
-                  <p-button
-                    label="Cancel"
-                    class="p-button-danger"
-                    (click)="deleteReservationMutation.mutate(reservation.id)"
-                  />
-                } @else {
-                  <p-button label="Cancel" [disabled]="true" />
-                }
-              </td>
-            </tr>
-          </ng-template>
-        </p-table>
+        @if (reservationsSignal().data?.length === 0) {
+          <p>No reservations found</p>
+        } @else {
+          <p-table
+            class="w-full"
+            [value]="reservationsSignal().data || []"
+            styleClass="p-datatable-striped"
+            [breakpoint]="'720px'"
+            [loading]="deleteReservationSignal().status === 'pending'"
+            responsiveLayout="stack"
+          >
+            <ng-template pTemplate="header" let-columns>
+              <tr>
+                <th>Room Number</th>
+                <th>Room Type</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Guests</th>
+                <th>Cancel</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-reservation let-columns="columns">
+              <tr>
+                <td>
+                  <a
+                    class="p-button"
+                    [routerLink]="['/', reservation.roomId]"
+                    >{{ reservation.roomNumber }}</a
+                  >
+                </td>
+                <td>{{ reservation.type }}</td>
+                <td>{{ reservation.startDate }}</td>
+                <td>{{ reservation.endDate }}</td>
+                <td>{{ reservation.guestName }}</td>
+                <td>
+                  @if (getIsDeletable(reservation)) {
+                    <p-button
+                      label="Cancel"
+                      class="p-button-danger"
+                      (click)="deleteReservationMutation.mutate(reservation.id)"
+                    />
+                  } @else {
+                    <p-button label="Cancel" [disabled]="true" />
+                  }
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        }
       }
     </div>
   `,

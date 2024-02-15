@@ -36,9 +36,6 @@ import { Component, computed, inject, input } from '@angular/core';
     >
       <form class="flex flex-col gap-4" (submit)="onSubmit()">
         <div class="form-control">
-          <label>
-            <span class="label-text">Check-in</span>
-          </label>
           <p-calendar
             appendTo="body"
             [minDate]="calendarProps().minDate"
@@ -51,20 +48,36 @@ import { Component, computed, inject, input } from '@angular/core';
             [disabledDates]="calendarProps().disabledDates"
             selectionMode="range"
             [ngModelOptions]="{ standalone: true }"
-          />
+            placeholder="Select Date Range"
+            inputId="templatedisplay"
+            [iconDisplay]="'input'"
+            class="[&_.p-inputtext]:rounded-[6px_0_0_6px]"
+          >
+            <ng-template
+              pTemplate="inputicon"
+              let-clickCallBack="clickCallBack"
+            >
+              <p-inputGroupAddon
+                (click)="clickCallBack($event)"
+                class="cursor-pointer"
+              >
+                <i class="pi pi-calendar"></i>
+              </p-inputGroupAddon>
+            </ng-template>
+          </p-calendar>
         </div>
         <p-inputGroup>
-          <p-inputGroupAddon>
-            <i class="pi pi-user"></i>
-          </p-inputGroupAddon>
           <input
-            class="w-full"
+            class="w-full p-inputtext p-component p-filled"
             pInputText
             name="guestName"
             placeholder="Guest Name"
             [(ngModel)]="formData.guestName"
             [ngModelOptions]="{ standalone: true }"
           />
+          <p-inputGroupAddon>
+            <i class="pi pi-user"></i>
+          </p-inputGroupAddon>
         </p-inputGroup>
         <p-button
           label="Submit"

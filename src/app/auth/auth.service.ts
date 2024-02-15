@@ -59,6 +59,23 @@ export class AuthService {
       );
   }
 
+  handleAutoLogin() {
+    const userData: {
+      email: string;
+      id: string;
+      username: string;
+    } = JSON.parse(localStorage.getItem('userData') as string);
+    if (!userData) {
+      return;
+    }
+
+    const loadedUser = new User(userData.email, userData.id, userData.username);
+
+    if (loadedUser) {
+      this.user.next(loadedUser);
+    }
+  }
+
   logout() {
     this.user.next(null);
     this.router.navigate(['/auth']);

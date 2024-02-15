@@ -2,7 +2,7 @@
 
 ## Description
 
-A hotel management system that allows users to book rooms, view room details, and view booking details. The system also allows the admin to add, edit, and delete rooms and bookings.
+A hotel management system that allows users to book rooms, view room details, and view booking details.
 A database is mocked using @msw/data (mock service worker) and the apis are mocked using msw (mock service worker).
 A mix of ngneat/query and rxjs observables are used to manage state and data fetching.
 primeNG is used for the UI components.
